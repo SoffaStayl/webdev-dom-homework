@@ -78,13 +78,12 @@
       });
       });
   };
-  getComments();
      let commentList =[
      {
       name: "Глеб Фокин",
       date: '12.02.22 12:18',
       text: 'Это будет первый комментарий на этой странице',
-      like: 3,
+      likes: 3,
       isLiked: false
       
     },
@@ -92,7 +91,7 @@
       name: 'Варвара Н.',
       date: '13.02.22 19:22',
       text: 'Мне нравится как оформлена страница',
-      like: 75,
+      likes: 75,
       isLiked: false
       
     },
@@ -163,33 +162,28 @@ renderComment();
         .replaceAll("<", "&lt;")
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
-    };
-    let fetchPromise = fetch(urlApi,
-    {
+      }
+      let fetchPromise = fetch(urlApi,
+       {
       method: 'POST',
-      });
-      fetchPromise.then((response) => {
-      const jsonPromise = response.json();
-      jsonPromise.then((responseData) => {
-      {
-       
-        body: JSON.stringify({
+      body: JSON.stringify({
           name: addNewComment(nameInputElement.value),
           text: addNewComment(commentInputElement.value),
           date: formatDate(new Date),
           isLiked: false,
           likes: 0,
         })
-      };
+    });
+    fetchPromise.then((response) => {
+      const jsonPromise = response.json();
+      jsonPromise.then((responseData) => {
      
         getComments();
 
 });
-      })
-    
-    
-    
-    buttonElement.addEventListener("click", addNewComment)
+    });
+      
+     buttonElement.addEventListener("click", addNewComment)
 
     const answerComment = () => {
       const CommentsTexts = document.querySelectorAll('.comment');
