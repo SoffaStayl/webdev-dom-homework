@@ -53,33 +53,34 @@
     const hours = String(datetime.getHours()).padStart(2, '0');
     return `${day}.${month}.${year} ${hours}:${minutes}`;
     };
-    let urlApi = "https://wedev-api.sky.pro/api/v1/moiseenko-sofya/comments";
-  const getComments = () => {
-    let fetchPromise = fetch(urlApi,
-      {
+   const getAPI = () => {
+    let fetchPromise = fetch("https://wedev-api.sky.pro/api/v1/:moiseenko-sofya/comments",
+  {
         method: 'GET',
       });
     fetchPromise.then((response) => {
       const jsonPromise = response.json();
       jsonPromise.then((responseData) => {
 
-        commentList = responseData.comments.map ((comment) => {
+       let commentList = responseData.comments.map ((comment) => {
           return {
             name: comment.author.name,
-            date: formatDate(comment.date),
+            date: formatDate(new Date(comment.date)),
             id: comment.id,
             isLiked: comment.isLiked,
             likes: comment.likes,
             text: comment.text,
           };
         });
-        console.log(commentList);
+       
         renderComment();
       });
       });
-  };
+  
+   }
+   getAPI();
      let commentList =[
-     {
+    /* {
       name: "Глеб Фокин",
       date: '12.02.22 12:18',
       text: 'Это будет первый комментарий на этой странице',
@@ -94,7 +95,7 @@
       likes: 75,
       isLiked: false
       
-    },
+    }, */
     
   ]; 
   const renderComment = () => {
@@ -117,6 +118,7 @@ listElement.innerHTML = commentHtml;
 initLikeListeners();
 answerComment();
   };
+ 
 
   const initLikeListeners = () => {
     const likeButtons = document.querySelectorAll(".like-button");
@@ -126,9 +128,8 @@ for (const button of likeButtons) {
 const index = button.dataset.index;
 commentList[index].likes += commentList[index].isLiked ? -1 : +1;
 commentList[index].isLiked = !commentList[index].isLiked
-
-renderComment();
   })
+  renderComment();
 }
 
   }
@@ -163,27 +164,24 @@ renderComment();
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
       }
-      let fetchPromise = fetch(urlApi,
-       {
-      method: 'POST',
-      body: JSON.stringify({
+  const postAPI = () => {
+    return fetch("https://wedev-api.sky.pro/api/v1/:moiseenko-sofya/comments",
+  {
+        method: 'POST',
+        body: JSON.stringify({
           name: addNewComment(nameInputElement.value),
-          text: addNewComment(commentInputElement.value),
-          date: formatDate(new Date),
-          isLiked: false,
-          likes: 0,
-        })
+            text: addNewComment(commentInputElement.value)
+        }). then(() => {
+          getAPI;
+      })
     });
-    fetchPromise.then((response) => {
-      const jsonPromise = response.json();
-      jsonPromise.then((responseData) => {
-     
-        getComments();
+    }
+    
+       
+         
 
-});
-    });
-      
-     buttonElement.addEventListener("click", addNewComment)
+    
+ buttonElement.addEventListener("click", addNewComment)
 
     const answerComment = () => {
       const CommentsTexts = document.querySelectorAll('.comment');
@@ -196,7 +194,7 @@ renderComment();
         nameInputElement.value = "";
       commentInputElement.value = "";
 
-      renderComment();
+     postAPI();
       });
     }
     answerComment();
