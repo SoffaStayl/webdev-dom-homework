@@ -66,11 +66,11 @@
     let fetchPromise = fetch(urlAPi,
   {
         method: 'GET',
-      });
-    fetchPromise.then((response) => {
-      const jsonPromise = response.json();
-      jsonPromise.then((responseData) => {
-
+      })
+      .then((response) => {
+        return response.json()
+      })
+      .then((responseData) => {
        commentList = responseData.comments.map ((comment) => {
           return {
             name: comment.author.name,
@@ -81,15 +81,12 @@
             text: comment.text,
           };
         });
-       console.log(commentList);
         renderComment();
       }).then((response) => {
-        buttonElement.disabled = false;
-        loaderElement.textContent = "";
-      })
+        loaderElement.style.display = 'none';
+        document.body.style.overflow = 'visible';
       });
-  
-   }
+      };
    getAPI();
 
    function slow (interval = 300) {
@@ -231,17 +228,16 @@ const answerComment = () => {
             likes: 0,
             isLiked: false,
         })
-      });
-      fetchPromise.then((response) => {
-        const jsonPromise = response.json();
-        jsonPromise.then ((responseData) => {
-          getAPI();
-        }).then(() => {
-          buttonElement.textContent = "Написать";
+      })
+      .then (() => {
+     
+          return getAPI();
+          loaderElement.style.display = 'none';
+        document.body.style.overflow = 'visible';
+         renderComment();
         })
-      });
       renderComment();
-    })
+    });
     
     
        
