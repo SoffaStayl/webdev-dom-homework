@@ -68,7 +68,15 @@
         method: 'GET',
       })
       .then((response) => {
+      if (response.status === 400) {
+        throw new Error ('Неверный запрос')
+      }
+      if (response.status === 500) {
+        throw new Error ('Ошибка сервера')
+      }
+      if (response.status === 200) {
         return response.json()
+      }
       })
       .then((responseData) => {
        commentList = responseData.comments.map ((comment) => {
@@ -85,7 +93,19 @@
       }).then((response) => {
         loaderElement.style.display = 'none';
         document.body.style.overflow = 'visible';
-      });
+      }).catch((error) => {
+          console.warn(error);
+          if (error.message === "Неверный запрос") {
+            alert ('Короткое имя или текст комментария, минимум 3 символа')
+          }
+          if (error.message === "Ошибка сервера") {
+            alert('Сломался сервер, попробуйте позже')
+            postComment()
+          }
+          if (window.navigator.onLine === false){
+            alert("Проблемы с интернетом, проверьте подключение")
+          }
+        })
       };
    getAPI();
 
