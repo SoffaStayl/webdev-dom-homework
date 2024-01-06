@@ -8,10 +8,10 @@
 
   <body>
     <div class="container" id="law">
-      <div class="loader"></div>
+      <div id="loader">Комментарии загружаются...</div>
       <ul class="comments" id="comment-id">     
       </ul>
-      <div id ="loading"></div>
+      <div id ="loading">Комментарий загружается</div>
       <div class="add-form" id="add-form">
         <input
           type="text"
@@ -57,12 +57,15 @@
     };
     const addForm = document.getElementById('add-form');
     const container = document.getElementById('law');
+    const loader = document.getElementById('loader');
     const loaderElement = document.getElementById("loading");
+    loaderElement.style.display = "none";
+    buttonElement.disabled = true;
+    buttonElement.textContent = 'Элемент добавляется...';
+
     
     let urlAPi = "https://wedev-api.sky.pro/api/v1/:moiseenko-sofya/comments";
    const getAPI = () => {
-    buttonElement.disabled = true;
-    loaderElement.innerHTML = "Комментарии загружаются...";
     let fetchPromise = fetch(urlAPi,
   {
         method: 'GET',
@@ -81,20 +84,25 @@
       .then((responseData) => {
        commentList = responseData.comments.map ((comment) => {
           return {
-            name: comment.author.name,
+            name: comment.author.name
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;"),
             date: formatDate(new Date(comment.date)),
             id: comment.id,
             isLiked: comment.isLiked,
             likes: comment.likes,
-            text: comment.text,
+            text: comment.text
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;"),
           };
         });
         renderComment();
       }).then((response) => {
+        loader.style.display = 'none';
+        addForm.style.display = 'flex';
         loaderElement.style.display = 'none';
-        document.body.style.overflow = 'visible';
       }).catch((error) => {
-          console.warn(error);
+        console.warn(error);
           if (error.message === "Неверный запрос") {
             alert ('Короткое имя или текст комментария, минимум 3 символа')
           }
@@ -105,6 +113,8 @@
           if (window.navigator.onLine === false){
             alert("Проблемы с интернетом, проверьте подключение")
           }
+          buttonElement.disabled = false;
+          buttonElement.textContent = "Написать";
         })
       };
    getAPI();
@@ -229,8 +239,8 @@ const answerComment = () => {
         commentInputElement.classList.add('error');
         return;
       };
-      buttonElement.disabled = true;
-      buttonElement.textContent = "Комментарий добавляется...";
+     addForm.style.display = "none";
+     loaderElement.style.display = "flex";
       const addNewComment =(stringhtml) => {
         return stringhtml
         .replaceAll("&", "&amp;")
@@ -252,8 +262,9 @@ const answerComment = () => {
       .then (() => {
      
           return getAPI();
-          loaderElement.style.display = 'none';
-        document.body.style.overflow = 'visible';
+          loader.style.display = 'none';
+        addForm.style.display = 'flex';
+        loaderElement.style.display = 'none';
          renderComment();
         })
       renderComment();
@@ -274,6 +285,6 @@ const answerComment = () => {
    
       renderComment();
     answerComment();
-
+    getAPI();
   </script>
 </html>
