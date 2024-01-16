@@ -76,15 +76,7 @@
         method: 'GET',
       })
       .then((response) => {
-      if (response.status === 400) {
-        throw new Error ('Неверный запрос')
-      }
-      if (response.status === 500) {
-        throw new Error ('Ошибка сервера')
-      }
-      if (response.status === 200) {
-        return response.json()
-      }
+       return response.json()
       })
       .then((responseData) => {
        commentList = responseData.comments.map ((comment) => {
@@ -99,32 +91,16 @@
             text: comment.text
             .replaceAll("<", "&lt;")
             .replaceAll(">", "&gt;"),
-            forceError: true
+            
           };
         });
         renderComment();
-      }).then((response) => {
         loader.style.display = 'none';
         addForm.style.display = 'flex';
         loaderElement.style.display = 'none';
-      }).catch((error) => {
-       console.warn(error.message);
-      
-          if (error.message === "Неверный запрос") {
-            alert ('Короткое имя или текст комментария, минимум 3 символа')
-          }
-          if (error.message === "Ошибка сервера") {
-            alert('Сломался сервер, попробуйте позже')
-            postComment()
-          }
-          if (window.navigator.onLine === false){
-            alert("Проблемы с интернетом, проверьте подключение")
-          }
-          buttonElement.disabled = false;
-          buttonElement.textContent = "Написать";
-          alert(error.message);
-        })  
-      };
+      });
+      }
+
    getAPI();
 
    function slow (interval = 300) {
@@ -170,6 +146,7 @@
     .join("");
 
 listElement.innerHTML = commentHtml;
+
 initLikeListeners();
 DeleteButtonsListeners();
 answerComment();
@@ -238,7 +215,8 @@ const answerComment = () => {
       buttonElement.disabled = false;
     }
    })
-   buttonElement.addEventListener("click", () => {
+  
+    buttonElement.addEventListener("click", () => {
       nameInputElement.classList.remove('error');
       if (nameInputElement.value === "") {
         nameInputElement.classList.add('error');
@@ -246,9 +224,12 @@ const answerComment = () => {
       if (commentInputElement.value === "") {
         commentInputElement.classList.add('error');
         return;
-      };
-     addForm.style.display = "none";
+      }
+      addForm.style.display = "none";
      loaderElement.style.display = "flex";
+   })
+    
+    
       const addNewComment =(stringhtml) => {
         return stringhtml
         .replaceAll("&", "&amp;")
@@ -256,7 +237,8 @@ const answerComment = () => {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
       }
-  let fetchPromise = fetch (urlAPi,
+    const handlePost = () => {
+       fetch (urlAPi,
   {
         method: 'POST',
         body: JSON.stringify({
@@ -266,19 +248,54 @@ const answerComment = () => {
             likes: 0,
             isLiked: false,
             forceError: true
-        })
-      })
-      .then (() => {
-     
-          return getAPI();
-          loader.style.display = 'none';
+        }).then((response) => {
+      console.log(response);
+      if (response.status === 201) {
+        return response.json();
+      } if(responce.status === 400) {
+        throw new Error ("Неверный запрос");
+      } if (response.status === 500) {
+        throw new Error ("Сервер упал");
+      }
+        
+      }).then((responseData) => {
+        return getAPI();
+      }).then (() => { 
+        nameInputElement.value = "";
+        commentInputElement.value = "";
+        buttonElement.disabled = false;
+          buttonElement.textContent = "Написать";
+        loader.style.display = 'none';
         addForm.style.display = 'flex';
         loaderElement.style.display = 'none';
-        alert(error.message);
-         renderComment();
-        })
-      renderComment();
+       
+      }).catch((error) => {
+        buttonElement.disabled = false;
+          buttonElement.textContent = "Написать";
+          if (error.message === "Неверный запрос") {
+                alert("Имя и комментарий должны быть не короче 3 символов");
+            }else if (error.message === "Сервер упал") {
+                alert("Кажется, что-то пошло не так, попробуй позже");
+      
+            } if (error.message === 'Failed to fetch') {
+                alert("Кажется,сломался интернет, попробуй позже");
+            }
+            console.warn(error);
+            handlePost();
+      })
     });
+    handlePost();
+    renderComment();
+    DeleteButtonsListeners();
+    }
+  
+    
+    
+    
+  
+      
+    
+    
     
     
        
@@ -289,12 +306,9 @@ const answerComment = () => {
      
 
    
-
-  
    
-    alert(error.message);
-      renderComment();
-    answerComment();
+   
+      
     getAPI();
   </script>
 </html>
