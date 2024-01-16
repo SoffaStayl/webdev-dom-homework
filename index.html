@@ -78,31 +78,25 @@
         method: 'GET',
       })
       .then((response) => {
-       return response.json()
+        return response.json()
       })
       .then((responseData) => {
        commentList = responseData.comments.map ((comment) => {
           return {
-            name: comment.author.name
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;"),
+            name: comment.author.name,
             date: formatDate(new Date(comment.date)),
             id: comment.id,
             isLiked: comment.isLiked,
             likes: comment.likes,
-            text: comment.text
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;"),
-            
+            text: comment.text,
           };
         });
         renderComment();
-        loader.style.display = 'none';
-        addForm.style.display = 'flex';
+      }).then((response) => {
         loaderElement.style.display = 'none';
+        document.body.style.overflow = 'visible';
       });
-      }
-
+      };
    getAPI();
 
    function slow (interval = 300) {
