@@ -233,8 +233,7 @@ const answerComment = () => {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;");
       }
-    const handlePost = () => {
-       fetch (urlAPi,
+      let fetchPromise = fetch (urlAPi,
   {
         method: 'POST',
         body: JSON.stringify({
@@ -243,48 +242,17 @@ const answerComment = () => {
             date: formatDate(new Date),
             likes: 0,
             isLiked: false,
-            forceError: true
-        }).then((response) => {
+        })
+      })
+      .then (() => {
      
-      if (response.status === 201) {
-        return response.json();
-      } if(responce.status === 400) {
-        throw new Error ("Неверный запрос");
-      } if (response.status === 500) {
-        throw new Error ("Сервер упал");
-      }
-        
-      }).then((responseData) => {
-        return getAPI();
-      }).then (() => { 
-      
-        buttonElement.disabled = false;
-          buttonElement.textContent = "Написать";
-        loader.style.display = 'none';
-        addForm.style.display = 'flex';
-        loaderElement.style.display = 'none';
-      }).then(() => {
-        return getAPI();
-      })
-       
-      }).then((data) => {
-        buttonElement.disabled = false;
-          buttonElement.textContent = "Написать";
-          nameInputElement.style.backgroundColor = "";
-          commentInputElement.style.backgroundColor = "";
-          nameInputElement.value = "";
-          commentInputElement.value = "";
-      }). catch ((error) => {
-        buttonElement.disabled = false;
-          buttonElement.textContent = "Написать";
-          nameInputElement.style.backgroundColor = "#FFB6C1";
-          commentInputElement.style.backgroundColor ="FFB6C1";
-          alert(error);
-      })
-            renderComment();
-      }
-    })
-   
+          return getAPI();
+          loaderElement.style.display = 'none';
+        document.body.style.overflow = 'visible';
+         renderComment();
+        })
+      renderComment();
+    });
   
     
     
