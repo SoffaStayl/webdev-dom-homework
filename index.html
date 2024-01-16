@@ -99,6 +99,7 @@
             text: comment.text
             .replaceAll("<", "&lt;")
             .replaceAll(">", "&gt;"),
+            forceError: true
           };
         });
         renderComment();
@@ -107,7 +108,8 @@
         addForm.style.display = 'flex';
         loaderElement.style.display = 'none';
       }).catch((error) => {
-       alert(error.message);
+       console.warn(error.message);
+      
           if (error.message === "Неверный запрос") {
             alert ('Короткое имя или текст комментария, минимум 3 символа')
           }
@@ -120,7 +122,8 @@
           }
           buttonElement.disabled = false;
           buttonElement.textContent = "Написать";
-        })
+          alert(error.message);
+        })  
       };
    getAPI();
 
@@ -262,6 +265,7 @@ const answerComment = () => {
             date: formatDate(new Date),
             likes: 0,
             isLiked: false,
+            forceError: true
         })
       })
       .then (() => {
@@ -270,6 +274,7 @@ const answerComment = () => {
           loader.style.display = 'none';
         addForm.style.display = 'flex';
         loaderElement.style.display = 'none';
+        alert(error.message);
          renderComment();
         })
       renderComment();
@@ -287,7 +292,7 @@ const answerComment = () => {
 
   
    
-   
+    alert(error.message);
       renderComment();
     answerComment();
     getAPI();
