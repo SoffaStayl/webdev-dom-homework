@@ -71,6 +71,8 @@
     
     let urlAPi = "https://wedev-api.sky.pro/api/v1/:moiseenko-sofya/comments";
    const getAPI = () => {
+    buttonElement.disabled = true;
+    loaderElement.innerHTML = "Комментарии загружаются...";
     let fetchPromise = fetch(urlAPi,
   {
         method: 'GET',
