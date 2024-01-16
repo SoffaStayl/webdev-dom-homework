@@ -221,12 +221,9 @@ const answerComment = () => {
         commentInputElement.classList.add('error');
         return;
       }
-      addForm.style.display = "none";
-     loaderElement.style.display = "flex";
-
-    
-    
-      const addNewComment =(stringhtml) => {
+      buttonElement.disabled = true;
+      buttonElement.textContent = "Комментарий добавляется...";
+       const addNewComment =(stringhtml) => {
         return stringhtml
         .replaceAll("&", "&amp;")
         .replaceAll("<", "&lt;")
