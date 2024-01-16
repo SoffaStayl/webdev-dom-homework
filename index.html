@@ -34,6 +34,11 @@
       </div>
     </div>
   </body>
+  <style>
+    .error {
+      background-color: red;
+    }
+  </style>
 
   <script>
     
@@ -102,7 +107,7 @@
         addForm.style.display = 'flex';
         loaderElement.style.display = 'none';
       }).catch((error) => {
-        console.warn(error);
+       alert(error.message);
           if (error.message === "Неверный запрос") {
             alert ('Короткое имя или текст комментария, минимум 3 символа')
           }
