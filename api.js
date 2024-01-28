@@ -1,5 +1,5 @@
 export const getApi = () => {
-    return fetch("https://wedev-api.sky.pro/api/v1/:sofya-moiseenko/comments", {
+    return fetch("https://wedev-api.sky.pro/api/v1/:sofya-moiseenk/comments", {
     method: "GET",
     })
     .then((response) => {
@@ -8,7 +8,7 @@ export const getApi = () => {
 };
 
 export const postApi = (textInputElement, nameInputElement) => {
-  return  fetch("https://wedev-api.sky.pro/api/v1/:sofya-moiseenko/comments", {
+  return  fetch("https://wedev-api.sky.pro/api/v1/:sofya-moiseenk/comments", {
   method: "POST",
   body: JSON.stringify({
     text: textInputElement.value
