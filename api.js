@@ -6,7 +6,7 @@ import { disabledFunction } from "./disable.js";
 // Принимаем с сервера комментарии
 
 export function getComments() {
-    return fetch("https://wedev-api.sky.pro/api/v1/eugene-alyoshin/comments", {
+    return fetch("https://wedev-api.sky.pro/api/v1/sofia-moiseenko/comments", {
         method: "GET",
     });
 }
@@ -14,7 +14,7 @@ export function getComments() {
 // Передаем новые комментарии на сервер
 
 export function postComments() {
-    return fetch("https://wedev-api.sky.pro/api/v1/eugene-alyoshin/comments", {
+    return fetch("https://wedev-api.sky.pro/api/v1/sofia-moiseenko/comments", {
       method: "POST",
       body: JSON.stringify(
         {
