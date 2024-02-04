@@ -1,23 +1,25 @@
-export const commentDate = () => {
-    let myDate = new Date(); 
-    let day = myDate.getDate();
-    let month = myDate.getMonth();
-    let year = myDate.getFullYear(); 
-    let hour = myDate.getHours(); 
-    let minute = myDate.getMinutes(); 
+export function timeFunction(date) {
+    let time = new Date(date);
+    let commentDate = time.getDate();
+    let commentMonth = time.getMonth() + 1;
+    let commentYear = () => {
+      return ("" + time.getFullYear()).substr(2);
+    };
+    let commentHours = time.getHours();
+    let commentMinutes = time.getMinutes();
     
-    if (day < 10) { 
-        day = "0" + day; 
-    }
-    if (month < 10) { 
-        month = "0" + month; 
-    }
-    if (hour < 10) { 
-        hour = "0" + hour; 
-    }
-    if (minute < 10) { 
-        minute = "0" + minute; 
+    if (commentDate < 10) {
+      commentDate = "0" + commentDate;
     }
     
-    let userDate = day + "." + month + "." + year + " " + hour + ":" + minute; 
+    if (commentMonth < 10) {
+      commentMonth = "0" + commentMonth;
     }
+    
+    if (commentMinutes < 10) {
+      commentMinutes = "0" + commentMinutes;
+    }
+    
+    let commentTime = `${commentDate}.${commentMonth}.${commentYear()} ${commentHours}:${commentMinutes}`;
+    return commentTime;
+    };
