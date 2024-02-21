@@ -1,96 +1,84 @@
-import { objOfConst } from "./constant.js";
-import { timeFunction } from "./date.js";
-import { renderComments } from "./render.js";
-import { disabledFunction } from "./disable.js";
-
-// Принимаем с сервера комментарии
-
-export function getComments() {
-    return fetch("https://wedev-api.sky.pro/api/v1/sofia-moiseenko/comments", {
-        method: "GET",
-    });
+const host = "https://wedev-api.sky.pro/api/v2/moiseenko-sofya/comments";
+const userURL = "https://wedev-api.sky.pro/api/user/login";
+export let token; 
+export let nameUser;
+export const setName = (newName) => {
+  nameUser = newName;
 }
 
-// Передаем новые комментарии на сервер
+export const setToken = (newToken) => {
+token = newToken;
+};
 
-export function postComments() {
-    return fetch("https://wedev-api.sky.pro/api/v1/sofia-moiseenko/comments", {
-      method: "POST",
-      body: JSON.stringify(
-        {
-            text: objOfConst.commentInputElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-            name: objOfConst.nameInputElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-            date: timeFunction(),
-            likes: objOfConst.comments.likes,
-            isLiked: objOfConst.comments.isLiked,
-            forceError: true,
-        },
-      ),
-    })
-}
-
-// Функция первого рендера страницы
-
-export function fetchAndRender() {
-  return getComments()
-  .then((response) => {
-    return response.json();
+export function getTodos() {
+  return  fetch(host, {
+    method: "GET",
+    headers : {
+      Authorization: `Bearer ${token}`,
+    }
   })
-  .then((responseData) => {
-    objOfConst.comments = responseData.comments.map((comment) => {
-      return {
-        name: comment.author.name,
-        date: timeFunction(comment.date),
-        text: comment.text,
-        likes: comment.likes,
-        isLiked: comment.isLiked,
-      };
-    });
-    return renderComments();
-  })
-  }
-
-// Функция добавления комментария на сервер и проверки на ошибки
-
-export function fetchPostAndErrors() {
-    return postComments()
     .then((response) => {
+      if(response.ststus === 401) {
 
-      if (response.status === 500) {
-        throw new Error("Ошибка сервера");
-      } else if (response.status === 400) {
-        throw new Error("Неверный запрос");
-      } else {
+
+
+        throw new Error("Нет авторизации")
+      }
+
+      return response.json();
+
+    })
+}
+
+export function postTodo( {name}, {text} ) {
+  return fetch(host, {
+    method: "POST",
+    headers : {
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      name: name
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;"),
+      text: text
+        .replaceAll("___<", "&lt;")
+        .replaceAll(">", "&gt;"),
+      forceError: true
+
+    }),
+  })
+  .then((response) => {
+    if(response.status===500){
+        throw new Error("Извините, неполатки с сервером")
+       }
+       if(response.status===400){
+        throw new Error("Недопустимое количество символов-меньше трех")
+       } 
+       // сonsole.log(response.status);
         return response.json();
-      }
+      })
+    }
+      export function login({login, password}) {
+        return fetch(userURL, {
+             method: "POST",
 
-    })
-    .then(() => {
-      return fetchAndRender();
-    })
-    .then(() => {
-      return disabledFunction(false);
-    })
-    .then(() => {
-      objOfConst.nameInputElement.value = "";
-      objOfConst.commentInputElement.value = "";
-    })
-    .catch((error) => {
-      disabledFunction(false);
-      objOfConst.addingText.style.opacity = "0";
-      if (error.message === "Ошибка сервера") {
-        alert("Сервер сломался, попробуйте позже");
-        console.warn("Код ошибки - 500");
-        return;
-      } else if (error.message === "Неверный запрос") {
-        alert("Имя и комментарий должны быть не короче 3х символов");
-        console.warn("Код ошибки - 400");
-        return;
-      } else {
-        alert("Кажется, у Вас проблемы с интернетом");
-        console.warn("Нет сети");
-        return;
-      }
+             body: JSON.stringify({
+              login,
+              password,
 
-    });
-  };
+             }),
+           })
+           .then((response, event) => {
+            if(response.status === 400) {
+              alert ("Вы ввели не верный логин или пароль");
+              event.stopPropagation();
+            }else{
+              return response.json();
+
+            }
+
+
+
+
+           })
+          }
