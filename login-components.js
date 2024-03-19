@@ -1,5 +1,7 @@
 import { loginUser, regUser } from "./api.js";
+import _ from 'lodash';
 export let name;
+
 
 export function renderLogin({ appEl, setToken, getWrittenComments }) {
   let isLoginMode = true;
@@ -70,16 +72,17 @@ export function renderLogin({ appEl, setToken, getWrittenComments }) {
           name.classList.add("error");
           return;
         }
-        regUser({
-          login: login.value,
-          password: password.value,
-          name: name.value,
+        registerUser({
+          login: login,
+          password: password,
+          name: _.capitalize(name),
         })
           .then((user) => {
             setToken(`Bearer ${user.user.token}`);
-            getWrittenComments();
+            fetchTodosAndRender();
           })
           .catch((error) => {
+            // TODO: Выводить алерт красиво
             alert(error.message);
           });
       }
