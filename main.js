@@ -66,25 +66,7 @@ import { format } from "date-fns";
         loaderElement.classList.add("hidden");
       });
   };
-  const tasksHtml = tasks
-  .map((task) => {
-		// Вызываем функцию format из date-fns, первый параметр — это дата, которую
-		// хотим отформатировать, второй параметр — это строка: к какому формату
-		// желаем привести дату. Обратите внимание MM — это номер месяца,
-		// mm — это минуты
-    const createDate = format(new Date(task.created_at), 'dd/MM/yyyy hh:mm');
-    return `
-        <li class="task">
-          <p class="task-text">
-            ${task.text} (Создал: ${task.user?.name ?? "Неизвестно"})
-            <button data-id="${
-              task.id
-            }" class="button delete-button">Удалить</button>
-          </p>
-          <p><i>Задача создана: ${createDate}</i></p>
-        </li>`;
-  })
-  .join("");
+  
 
   fetchComments();
   const getDateNow = () => {
