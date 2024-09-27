@@ -49,6 +49,7 @@ export const renderComments = ({commentsArray,likes,commentClick}) => {
   ` ;
 
 
+
   if (!token) {
     const authorizationButton = document.getElementById("link-to-link");
     authorizationButton.addEventListener("click",  renderLogin )
